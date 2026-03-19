@@ -15,7 +15,7 @@ A software KVM that lets you share one keyboard and mouse across multiple PCs on
 - **LAN auto-discovery** — peers appear automatically, no IP configuration needed
 - **TLS encrypted** — all traffic is encrypted with TOFU certificate pinning
 - **Multi-monitor aware** — correctly maps cursor position across screens of different sizes
-- **Hotkey return** — instantly snap back to local control via configurable hotkey
+- **Hotkey return** — press Scroll Lock to snap back to local control
 - **Windows + macOS** — Windows as primary controller, macOS as peer (Linux experimental)
 
 ---
@@ -145,7 +145,7 @@ shareflow/
         │   ├── screen.rs       # Edge detection, boundary validation
         │   ├── protocol.rs     # Message types, encode/decode
         │   ├── config.rs       # App configuration, neighbour layout
-        │   └── hotkey.rs       # Configurable hotkey detection
+        │   └── hotkey.rs       # Scroll Lock hotkey detection
         ├── input/
         │   ├── windows.rs      # Windows low-level hooks (capture + injection)
         │   ├── macos.rs        # macOS CGEventTap (capture + injection)
