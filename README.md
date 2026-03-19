@@ -172,3 +172,7 @@ shareflow/
 | `24800` | TCP (TLS) | Peer communication (configurable) |
 
 ---
+
+## License
+
+MIT
